@@ -6,7 +6,7 @@ from PIL import Image
 # 1. Configuração da Página
 st.set_page_config(page_title="Consulta Pé-de-Meia - Constantino", page_icon="🎓")
 
-# --- ESTILO CSS PARA MENSAGENS ---
+# --- ESTILO CSS PARA MENSAGENS E RODAPÉ ---
 st.markdown("""
     <style>
     .caixa-sucesso {
@@ -20,6 +20,15 @@ st.markdown("""
         text-align: center; font-size: 22px; font-weight: bold;
     }
     .destaque-tel { font-size: 26px; color: #b22222; display: block; margin-top: 10px; }
+    
+    /* Estilo para o Rodapé */
+    .rodape {
+        text-align: center;
+        color: #666;
+        font-style: italic;
+        margin-top: 50px;
+        padding: 20px;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -37,11 +46,10 @@ except:
 st.title("🎓 Portal de Consulta - Pé-de-Meia")
 st.subheader("Escola Padre Constantino de Monte")
 
-# 3. Carregamento dos Dados (Direto do Google Sheets)
-@st.cache_data(ttl=600) # Atualiza o cache a cada 10 minutos
+# 3. Carregamento dos Dados (Google Sheets)
+@st.cache_data(ttl=600)
 def carregar_dados():
     try:
-        # ID da sua planilha que você me enviou
         ID_PLANILHA = "136yN8S4R3RTeAaErRE-trzS6fmmz0o3s"
         url = f"https://docs.google.com/spreadsheets/d/{ID_PLANILHA}/export?format=xlsx"
         return pd.read_excel(url)
@@ -55,6 +63,7 @@ if df is not None:
     col_nome, col_cpf, col_nasc, col_situacao, col_desc = "nome", "CPF", "data de nascimento", "Situação", "Descrição"
 
     with st.form("form_consulta"):
+        st.write("Digite os dados do estudante:")
         cpf_digitado = st.text_input("CPF (somente números):")
         nasc_digitada = st.text_input("Data de Nascimento (ex: 30/04/2010):")
         btn = st.form_submit_button("CONSULTAR AGORA")
@@ -86,3 +95,7 @@ if df is not None:
                                     <span class="destaque-tel">(67) 3454-1045</span></div>""", unsafe_allow_html=True)
             else:
                 st.error("❌ Estudante não localizado. Verifique se digitou corretamente.")
+
+# --- RODAPÉ FINAL (Sempre visível) ---
+st.markdown("---")
+st.markdown('<div class="rodape">Feito com carinho pela Equipe Padre Constantino ❤️</div>', unsafe_allow_html=True)
